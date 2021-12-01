@@ -6,9 +6,54 @@
 \begin{document}
 \maketitle
 \addsolution{pro1}{AgOH}{模拟}
+\addsolution{pro2}{AgOH}{模拟}
+\addsolution{三斜求积术}{AgOH}{模拟}
+\addsolution{pro4}{AgOH}{模拟}
+\addsolution{pro5}{AgOH}{模拟}
+\addsolution{pro6}{AgOH}{模拟}
 
 \section*{题目概览}
 \solutiontab
+
+\makesolution
+\section*{做法}
+\section*{标程}
+
+\makesolution
+\section*{做法}
+\section*{标程}
+
+\makesolution
+\section*{做法}
+按照题目说明中给出的海伦公式进行模拟即可。
+
+\section*{标程}
+\begin{lstlisting}
+#include <cstdio>
+#include <cmath>
+int main()
+{
+    int t;
+    scanf("%d", &t);
+    while(t--)
+    {
+        int a,b,c;
+        scanf("%d%d%d",&a,&b,&c);
+        double p = (a+b+c)/2.0;
+        double s = sqrt(p*(p-a)*(p-b)*(p-c));
+        printf("%.2f\n", s);
+    }
+    return 0;
+}
+\end{lstlisting}
+
+\makesolution
+\section*{做法}
+\section*{标程}
+
+\makesolution
+\section*{做法}
+\section*{标程}
 
 \makesolution
 \section*{做法}
