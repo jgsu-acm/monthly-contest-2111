@@ -6,7 +6,7 @@
 \begin{document}
 \maketitle
 \addsolution{克隆干员}{AgOH}{模拟}
-\addsolution{pro2}{AgOH}{模拟}
+\addsolution{中转站}{AgOH\&Tifa}{前缀和}
 \addsolution{三斜求积术}{AgOH}{模拟}
 \addsolution{子树大小}{AgOH}{dfs}
 \addsolution{pro5}{AgOH}{模拟}
@@ -14,6 +14,9 @@
 
 \section*{题目概览}
 \solutiontab
+
+\section*{鸣谢}
+感谢\href{https://github.com/Tiphereth-A}{\@Tifa}大佬参与本次比赛的出题工作。
 
 \makesolution
 \section*{做法}
@@ -58,7 +61,112 @@ int main()
 
 \makesolution
 \section*{做法}
+\emph{本题改编自[CSP-S2019 江西] 和积和。}
+
+本题有多种解法，这里提供一种效率不高但比较好想的前缀和做法。
+
+设区间限制为 $[l,r]$ 时，玩家玩游戏的会获得的分数为 $S(l,r)$，即：
+
+$$S(l,r) = \sum_{i=l}^r \sum_{j=l}^r a_i b_j$$
+
+设我们需要求解的答案——所有可能的区间约束下每次你能获得的分数的总和——为 $ans$，有：
+
+$$ans = \sum_{l=1}^n \sum_{r=l}^n S(l,r)$$
+
+让我们来尝试着化简一下这个式子。首先，根据分配律，有：
+
+$$S(l,r) = \sum_{i=l}^ra_i \times \sum_{j=l}^rb_j$$
+
+设数列 $\{a_n\}$ 的前缀和数列为 $\{pre^a_n\}$，数列 $\{b_n\}$ 的前缀和数列为 $\{pre^b_n\}$，有：
+
+\begin{align*}
+    S(l,r) & = \left(pre^a_r - pre^a_{l-1}\right) \times \left(pre^b_r - pre^b_{l-1}\right)      \\
+           & = pre^a_rpre^b_r - pre^a_rpre^b_{l-1} - pre^a_{l-1}pre^b_r + pre^a_{l-1}pre^b_{l-1}
+\end{align*}
+
+设 $pre^{ab}_i = pre^a_ipre^b_i$，有：
+
+$$S(l,r) = pre^{ab}_r + pre^{ab}_{l-1} - pre^a_rpre^b_{l-1} - pre^a_{l-1}pre^b_r$$
+
+把 $\sum_{r=l}^n$ 拆进去，有：
+
+\begin{align*}
+    ans & = \sum_{l=1}^n \left(
+    \sum_{r=l}^n pre^{ab}_r +
+    (n-l+1)pre^{ab}_{l-1} -
+    \sum_{r=l}^n pre^a_rpre^b_{l-1} -
+    \sum_{r=l}^n pre^a_{l-1}pre^b_r\right
+    )                           \\
+        & = \sum_{l=1}^n \left(
+    \sum_{r=l}^n pre^{ab}_r +
+    (n-l+1)pre^{ab}_{l-1} -
+    pre^b_{l-1}\sum_{r=l}^n pre^a_r -
+    pre^a_{l-1}\sum_{r=l}^n pre^b_r\right
+    )
+\end{align*}
+
+设数列 $\{pre^a_n\}$ 的前缀和数列为 $\{pre^{pre^a}_n\}$，数列 $\{pre^b_n\}$ 的前缀和数列为 $\{pre^{pre^b}_n\}$，数列 $\{pre^{ab}_n\}$ 的前缀和数列为 $\{pre^{pre^{ab}}_n\}$，上式即化为：
+
+\small
+$$
+    \sum_{l=1}^n \left(
+    \left(pre^{pre^{ab}}_n - pre^{pre^{ab}}_{l-1}\right) +
+    (n-l+1)pre^{ab}_{l-1} -
+    \left(pre^{pre^a}_n - pre^{pre^a}_{l-1}\right)pre^a_r -
+    \left(pre^{pre^b}_n - pre^{pre^b}_{l-1}\right)pre^b_r
+    \right)
+$$
+\normalsize
+
+数列 $a\{n\}$ 和数列 $b\{n\}$是已知的，我们可以 $O(n)$ 预处理出 $\{pre^a_n\}$ 与 $\{pre^b_n\}$，然后我们又可以 $O(n)$ 预处理出 $\{pre^{pre^a}_n\}$、$\{pre^{pre^b}_n\}$、$\{pre^{ab}_n\}$。这样上式后半部分的一大坨就可以 $O(1)$ 得出结果了，总时间复杂度 $O(n)$。
+
+在实现的过程中需要注意本来原式只有加法，无论怎样式子中都不会出现负数。但转化为前缀和后式子中出现了减法，在值取模后相减有可能出现负数，需要把负数转回整数再继续运算。
+
 \section*{标程}
+\begin{lstlisting}
+#include <iostream>
+using namespace std;
+const int MAXN = 5e5+5;
+const int MOD = 1e9+7;
+typedef long long ll;
+ll a[MAXN],b[MAXN];
+ll prea[MAXN],preb[MAXN],preab[MAXN];
+ll preprea[MAXN],prepreb[MAXN],prepreab[MAXN];
+int n;
+inline void calcPre(ll a[], ll pre[])   // 计算a数组的前缀和存于pre数组中
+{
+    for(int i=1;i<=n;i++)
+        pre[i]=(a[i]+pre[i-1]) % MOD;
+}
+ll solve()
+{
+    ll sum = 0;
+    for(int l=1;l<=n;l++)
+    {
+        sum = (sum + prepreab[n]-prepreab[l-1]+MOD) % MOD;  // 第一项
+        sum = (sum + (n-l+1)*preab[l-1]%MOD) % MOD;         // 第二项
+        sum -= (preprea[n]-preprea[l-1])*preb[l-1]%MOD;     // 第三项
+        sum = (sum + MOD) % MOD;    // 有可能出现负数，转为正数
+        sum -= (prepreb[n]-prepreb[l-1])*prea[l-1]%MOD;     // 第四项
+        sum = (sum + MOD) % MOD;    // 有可能出现负数，转为正数
+    }
+    return sum;
+}
+int main()
+{
+    cin>>n;
+    for(int i=1;i<=n;i++) cin>>a[i];
+    for(int i=1;i<=n;i++) cin>>b[i];
+    calcPre(a, prea);
+    calcPre(b, preb);
+    for(int i=1;i<=n;i++) preab[i]=prea[i]*preb[i]%MOD;
+    calcPre(prea, preprea);
+    calcPre(preb, prepreb);
+    calcPre(preab, prepreab);
+    cout<<solve()<<endl;
+    return 0;
+}
+\end{lstlisting}
 
 \makesolution
 \section*{做法}
