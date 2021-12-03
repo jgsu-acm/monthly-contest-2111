@@ -1,3 +1,4 @@
+% !TeX spellcheck = <none>
 \documentclass{ctpro}
 \usepackage{shortvrb}
 
@@ -10,7 +11,7 @@
 \addproblem{中转站}{1000}{128}{传统}{AgOH\&Tifa}
 \addproblem{三斜求积术}{1000}{128}{传统}{AgOH}
 \addproblem{子树大小}{1000}{128}{传统}{AgOH}
-\addproblem{pro5}{1000}{128}{传统}{AgOH}
+\addproblem{雷立方阵列}{1000}{128}{传统}{Tifa}
 \addproblem{pro6}{1000}{128}{传统}{AgOH}
 
 \section*{比赛信息}
@@ -254,9 +255,51 @@ $$A \stackrel{a_2}{\rightarrow} C \stackrel{b_2}{\rightarrow} B,~score=a_2 \time
 
 \makeproblem
 \section*{题目描述}
+
 \section*{输入格式}
+
+第一行，两个整数 $n,p~(1\leq n\leq 10^5, 2\leq p\leq 10^9+7)$, 含义见题目描述 
+
+第二行，$n$ 个整数 $a_1, a_2,...,a_n~(0\leq a_1, a_2,...,a_n<p)$, 含义见题目描述
+
+第三行，一个整数 $q,~(1\leq q\leq 2\times 10^5)$, 表示操作次数
+
+接下来 $m$ 行，每行均为且仅为如下格式之一
+\begin{itemize}
+	\item |1 x y k|: 将 $a_x,a_{x+1},...,a_y$ 加 $k$ 并对 $p$ 取模
+	\item |2 x y|: 输出 $a_x,a_{x+1},...,a_y$ 间的\textbf{最大值}
+\end{itemize}
+
+注意，如果某次操作的区间不合法, 则应输出 |invalid| 并忽略该次操作
+
 \section*{输出格式}
+
+输出 $m$ 行，每次操作后均需输出一行，其中
+\begin{itemize}
+	\item 若操作的区间不合法 (即不满足 $1\leq x\leq y\leq n$), 则输出 |invalid|
+	\item 若为操作 $1$ 且 $1\leq x\leq y\leq n$, 则输出 |valid|
+	\item 若为操作 $2$ 且 $1\leq x\leq y\leq n$, 则输出结果
+\end{itemize}
+
 \section*{输入输出样例}
+\testcasetab
+{
+	5 100\par
+	1 5 4 2 3\par
+	5\par
+	2 2 4\par
+	1 2 3 2\par
+	2 3 4\par
+	1 5 1 1\par
+	2 1 4
+}
+{
+	5\par
+	valid\par
+	6\par
+	invalid\par
+	7
+}
 
 \makeproblem
 \section*{题目描述}
