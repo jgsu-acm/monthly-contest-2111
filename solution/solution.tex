@@ -242,12 +242,67 @@ int main()
 \section*{做法}
 首先，若落下的这着棋其周围没有己方棋子，那么它能产生的影响只有使得己方棋块数量增加了 $1$。
 
-否则，我们就需要判断这着棋是不是一着“粘”，若这着棋是“粘”，他“粘”住了几块棋（也就是这着棋使得棋块的数量减少了多少）。
+否则，我们就需要判断这着棋是不是一着“粘”，若这着棋是“粘”，它“粘”住了几块棋（也就是这着棋使得棋块的数量减少了多少）。
 
 判断一着棋是不是一着“粘”即判断这着棋是否将不同的块连接了起来，也就是判断这着棋周围的己方棋子是否全部属于同一个块，显然我们可以使用并查集的查询操作来解决这个问题。而计算这着棋使得棋块的数量减少了多少更加容易，若其导致了一次并查集之间的合并，那么棋块的数量显然就会减一。
 
 注意黑白双方是独立的，所以需要开两个并查集。每着棋的信息是由横纵坐标 $x,y$ 两个信息决定的，我们可以将其转化为 $(x-1)*n + y$ 来轻松搞定并查集的实现。
 
 \section*{标程}
+\begin{lstlisting}
+#include <iostream>
+#include <cstring>
+using namespace std;
+const int maxn = 505;
+int fa[2][maxn*maxn];       // 两个并查集，一维下标为0时是白子的并查集，1时是黑子的并查集。
+int find(int k, int x) { return x==fa[k][x]?x:x=find(k, fa[k][x]); }
+inline void merge(int k,int x,int y) { fa[k][find(k,x)]=find(k,y); }
+int n,m,zhan[2], kuai[2], board[maxn][maxn];
+inline int hs(int x,int y) { return (x-1)*n+y; }
+\end{lstlisting}
+\clearpage
+\begin{lstlisting}
+int main()
+{
+    memset(board, -1, sizeof(board));
+    cin>>n>>m;
+    for(int i=1;i<=n*n;i++) fa[0][i]=fa[1][i]=i;    // 初始化并查集
+    for(int i=1;i<=m;i++)
+    {
+        int x,y;
+        cin>>x>>y;
+        int k = i%2;
+        board[x][y]=k;  // 存下当前位置棋子黑白
+        ++kuai[k];      // 如果是孤立棋子的话块数就会+1
+        int cnt = 0;    // 每与周围同色棋子合并一下cnt就+1，当cnt为2时代表这一着棋是粘
+        if(board[x-1][y]==board[x][y]&&find(k, hs(x,y))!=find(k, hs(x-1,y)))    // 上
+        {
+            merge(k, hs(x,y), hs(x-1,y));
+            --kuai[k];  // 每合并一次，块数就会减一
+            ++cnt;
+        }
+        if(board[x+1][y]==board[x][y]&&find(k, hs(x,y))!=find(k, hs(x+1,y)))    // 下
+        {
+            merge(k, hs(x,y), hs(x+1,y));
+            --kuai[k];
+            if(++cnt==2) ++zhan[k];
+        }
+        if(board[x][y-1]==board[x][y]&&find(k, hs(x,y))!=find(k, hs(x,y-1)))    // 左
+        {
+            merge(k, hs(x,y), hs(x,y-1));
+            --kuai[k];
+            if(++cnt==2) ++zhan[k];
+        }
+        if(board[x][y+1]==board[x][y]&&find(k, hs(x,y))!=find(k, hs(x,y+1)))    // 右
+        {
+            merge(k, hs(x,y), hs(x,y+1));
+            --kuai[k];
+            if(++cnt==2) ++zhan[k];
+        }
+    }
+    cout<<zhan[1]<<' '<<zhan[0]<<endl<<kuai[1]<<' '<<kuai[0]<<endl;
+    return 0;
+}
+\end{lstlisting}
 
 \end{document}
