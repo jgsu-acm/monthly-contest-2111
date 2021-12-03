@@ -1,4 +1,3 @@
-% !TeX spellcheck = <none>
 \documentclass{ctpro}
 \usepackage{shortvrb}
 
@@ -11,7 +10,7 @@
 \addproblem{中转站}{1000}{128}{传统}{AgOH\&Tifa}
 \addproblem{三斜求积术}{1000}{128}{传统}{AgOH}
 \addproblem{子树大小}{1000}{128}{传统}{AgOH}
-\addproblem{雷立方阵列}{1000}{128}{传统}{Tifa}
+\addproblem{雷立方体阵列}{1000}{128}{传统}{Tifa}
 \addproblem{pro6}{1000}{128}{传统}{AgOH}
 
 \section*{比赛信息}
@@ -256,29 +255,45 @@ $$A \stackrel{a_2}{\rightarrow} C \stackrel{b_2}{\rightarrow} B,~score=a_2 \time
 \makeproblem
 \section*{题目描述}
 
+|Tifa| 在提瓦特世界里发现了一个奇妙的机关：雷立方体。
+
+\vspace{0.2em}
+
+\begin{center}
+    \includegraphics[width=\linewidth]{images/E_1.png}
+\end{center}
+
+这个机关上面有 $p$ 个灯，每个雷立方体受到一次攻击时便点亮一个灯，当 $k$ 个灯全部被点亮并受到一次攻击后会熄灭所有的灯。
+
+现在 |Tifa| 面前有 $n$ 个雷立方体，编号为 $1,2, \cdots, n$。|Tifa| 会对其中若干个雷立方体攻击若干次，在这之后 |Tifa| 想知道其中某些雷立方体中哪个点亮的灯最多。
+
+由于 |Tifa| 太菜了，所以他来求助你。又由于 |Tifa| 急着去雪山堆雪人，所以你只有 1s 的时间回答 |Tifa| 的问题。
+
 \section*{输入格式}
 
-第一行，两个整数 $n,p~(1\leq n\leq 10^5, 2\leq p\leq 10^9+7)$, 含义见题目描述 
+第一行，两个整数 $n,p~(1 \leq n \leq 10^5, 2 \leq p \leq 10^9+7)$, 含义见题目描述。
 
-第二行，$n$ 个整数 $a_1, a_2,...,a_n~(0\leq a_1, a_2,...,a_n<p)$, 含义见题目描述
+第二行，$n$ 个整数 $a_1, a_2, \cdots, a_n~(0 \leq a_1, a_2, \cdots, a_n \leq p)$, 表示编号为 $1,2, \cdots, n$ 的雷立方体，共 $n$ 个。
 
-第三行，一个整数 $q,~(1\leq q\leq 2\times 10^5)$, 表示操作次数
+第三行，一个整数 $q,~(1 \leq q \leq 2 \times 10^5)$, 表示操作次数。
 
-接下来 $m$ 行，每行均为且仅为如下格式之一
-\begin{itemize}
-	\item |1 x y k|: 将 $a_x,a_{x+1},...,a_y$ 加 $k$ 并对 $p$ 取模
-	\item |2 x y|: 输出 $a_x,a_{x+1},...,a_y$ 间的\textbf{最大值}
-\end{itemize}
+接下来 $m$ 行，每行均为且仅为如下格式之一：
+
+\begin{enumerate}
+	\item |1 x y k|: 攻击 $a_x, a_{x+1}, \cdots, a_y~k$ 次；
+	\item |2 x y|: 输出 $a_x, a_{x+1}, \cdots, a_y$ 间的\textbf{最大值}以及对应的编号。
+\end{enumerate}
 
 注意，如果某次操作的区间不合法, 则应输出 |invalid| 并忽略该次操作
 
 \section*{输出格式}
 
-输出 $m$ 行，每次操作后均需输出一行，其中
+输出 $m$ 行，每次操作后均需输出一行，其中：
+
 \begin{itemize}
-	\item 若操作的区间不合法 (即不满足 $1\leq x\leq y\leq n$), 则输出 |invalid|
-	\item 若为操作 $1$ 且 $1\leq x\leq y\leq n$, 则输出 |valid|
-	\item 若为操作 $2$ 且 $1\leq x\leq y\leq n$, 则输出结果
+	\item 若操作的区间不合法 (即不满足 $1 \leq x \leq y \leq n$), 则输出 |invalid|；
+	\item 若为操作 $1$ 且 $1 \leq x \leq y \leq n$, 则输出 |valid|；
+	\item 若为操作 $2$ 且 $1 \leq x \leq y \leq n$, 则输出结果。
 \end{itemize}
 
 \section*{输入输出样例}
