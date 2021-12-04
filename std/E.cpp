@@ -65,7 +65,6 @@ void modify(int x, int y) {
         return;
     }
     _modify(x, y % p, 1, 1, n);
-    cout << "valid\n";
 }
 
 void query(int x, int y) {

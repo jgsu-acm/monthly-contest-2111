@@ -281,10 +281,10 @@ $$A \stackrel{a_2}{\rightarrow} C \stackrel{b_2}{\rightarrow} B,~score=a_2 \time
 
 \begin{enumerate}
 	\item |1 x k|: 攻击 $a_x~k$ 次，$k \geq 0$；
-	\item |2 x y|: 输出 $a_x, a_{x+1}, \cdots, a_y$ 间的\textbf{最大值}以及对应的编号。
+	\item |2 x y|: 输出 $a_x, a_{x+1}, \cdots, a_y$ 间的\textbf{最大值}以及对应的编号，若最大值相同则优先输出编号小的。
 \end{enumerate}
 
-注意，如果某次操作的区间不合法, 则应输出 |invalid| 并忽略该次操作
+注意，如果某次操作不合法, 则应输出 |invalid| 并忽略该次操作
 
 保证所有输入数据均在 |int| 范围内
 
@@ -293,8 +293,8 @@ $$A \stackrel{a_2}{\rightarrow} C \stackrel{b_2}{\rightarrow} B,~score=a_2 \time
 输出 $m$ 行，每次操作后均需输出一行，其中：
 
 \begin{itemize}
-	\item 若操作不合法 (即不满足 $1 \leq x \leq y \leq n$), 则输出 |invalid|；
-	\item 若为操作 $1$ 且 $1 \leq x \leq n$, 则输出 |valid|；
+	\item 若操作不合法 (即对于操作 $1$ 不满足 $1 \leq x \leq n$, 对于操作 $2$ 不满足 $1 \leq x \leq y \leq n$), 则输出 |invalid|；
+	\item 若为操作 $1$ 且 $1 \leq x \leq n$, 则该行什么也不需要输出；
 	\item 若为操作 $2$ 且 $1 \leq x \leq y \leq n$, 则输出结果。
 \end{itemize}
 
@@ -313,10 +313,10 @@ $$A \stackrel{a_2}{\rightarrow} C \stackrel{b_2}{\rightarrow} B,~score=a_2 \time
 }
 {
     1 1\par
-    valid\par
+    \par
     4 5\par
     invalid\par
-    valid\par
+    \par
     1 4
 }
 
