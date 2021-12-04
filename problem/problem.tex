@@ -10,7 +10,7 @@
 \addproblem{中转站}{1000}{128}{传统}{AgOH\&Tifa}
 \addproblem{三斜求积术}{1000}{128}{传统}{AgOH}
 \addproblem{子树大小}{1000}{128}{传统}{AgOH}
-\addproblem{雷立方阵列}{1000}{128}{传统}{Tifa}
+\addproblem{雷立方体阵列}{1000}{128}{传统}{Tifa}
 \addproblem{Go}{1000}{128}{传统}{AgOH}
 
 \section*{比赛信息}
@@ -280,40 +280,44 @@ $$A \stackrel{a_2}{\rightarrow} C \stackrel{b_2}{\rightarrow} B,~score=a_2 \time
 接下来 $m$ 行，每行均为且仅为如下格式之一：
 
 \begin{enumerate}
-	\item |1 x y k|: 攻击 $a_x, a_{x+1}, \cdots, a_y~k$ 次；
+	\item |1 x k|: 攻击 $a_x~k$ 次；
 	\item |2 x y|: 输出 $a_x, a_{x+1}, \cdots, a_y$ 间的\textbf{最大值}以及对应的编号。
 \end{enumerate}
 
 注意，如果某次操作的区间不合法, 则应输出 |invalid| 并忽略该次操作
+
+保证所有输入数据均在 |int| 范围内
 
 \section*{输出格式}
 
 输出 $m$ 行，每次操作后均需输出一行，其中：
 
 \begin{itemize}
-	\item 若操作的区间不合法 (即不满足 $1 \leq x \leq y \leq n$), 则输出 |invalid|；
-	\item 若为操作 $1$ 且 $1 \leq x \leq y \leq n$, 则输出 |valid|；
+	\item 若操作不合法 (即不满足 $1 \leq x \leq y \leq n$), 则输出 |invalid|；
+	\item 若为操作 $1$ 且 $1 \leq x \leq n$, 则输出 |valid|；
 	\item 若为操作 $2$ 且 $1 \leq x \leq y \leq n$, 则输出结果。
 \end{itemize}
 
 \section*{输入输出样例}
 \testcasetab
 {
-	5 100\par
-	1 5 4 2 3\par
-	5\par
-	2 2 4\par
-	1 2 3 2\par
-	2 3 4\par
-	1 5 1 1\par
-	2 1 4
+	7 114514\par
+    1 9 1 9 8 1 0\par
+    6\par
+    2 1 1\par
+    1 5 114511\par
+    2 5 7\par
+    1 0 1\par
+    1 4 114507\par
+    2 4 4
 }
 {
-	5\par
-	valid\par
-	6 3\par
-	invalid\par
-	7 2
+    1 1\par
+    valid\par
+    4 5\par
+    invalid\par
+    valid\par
+    1 4
 }
 
 \makeproblem
