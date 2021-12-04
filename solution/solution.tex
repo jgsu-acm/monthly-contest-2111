@@ -353,7 +353,7 @@ void build(int l,int r,int k=1)
 void modify(int p,int z,int k=1)
 {
     int l=sgt[k].l, r=sgt[k].r;
-    if(l==r) sgt[k].val.first=(sgt[k].val.first+z)%mod;
+    if(l==r) sgt[k].val.first=(sgt[k].val.first+z)%mod; // 使用取模来简单处理全部被点亮后再次受到攻击的情况
     else 
     {
         int m = (l+r)>>1;
