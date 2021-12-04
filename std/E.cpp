@@ -26,7 +26,7 @@ void _init(const int now, const int l, const int r) {
     _init(lch(now), l, mid);
     _init(rch(now), mid + 1, r);
     pushup(now);
-}   // namespace Segtree
+}
 
 void _modify(const int pos, const int k, const int now, const int l, const int r) {
     if (l == r) {
@@ -83,8 +83,6 @@ using Segtree::query;
 
 int main() {
     ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    cout.tie(nullptr);
 
     init();
     int m;
