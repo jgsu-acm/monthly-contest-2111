@@ -1,12 +1,12 @@
-\documentclass{ctsol}
+\documentclass{../cpct/ctsol}
 
-\title{ACM算法与微应用实验室2021年11月月赛题解}
-\date{2021年12月1日}
+\title{ACM 算法与微应用实验室 2021 年 11 月月赛题解}
+\date{2021 年 12 月 1 日}
 
 \begin{document}
 \maketitle
 \addsolution{克隆干员}{AgOH}{模拟}
-\addsolution{中转站}{AgOH\&Tifa}{前缀和}
+\addsolution{中转站}{AgOH \And Tifa}{前缀和}
 \addsolution{三斜求积术}{AgOH}{模拟}
 \addsolution{子树大小}{AgOH}{dfs}
 \addsolution{雷立方体阵列}{Tifa}{线段树}
@@ -16,51 +16,23 @@
 \solutiontab
 
 \section*{鸣谢}
+
 感谢\href{https://github.com/Tiphereth-A}{\@Tifa}大佬参与本次比赛的出题工作。
 
 \makesolution
 \section*{做法}
+
 模拟过程。比较简便的做法如下：
 
 首先我们先将干员的四种不同朝向时的状况分别保存于数组中（也就是先把干员旋转好），然后开出一个初始值为0的数组用来表示战场，最后每输入一个点后就向这个战场数组中涂色（填1）即可。
 
 \section*{标程}
-\begin{lstlisting}
-#include <iostream>
-#include <string>
-using namespace std;
-string s[10];
-int fw[5][10][10],a[15][15]; // fw[i] i从1到4分别保存干员朝向上下左右时的攻击范围；a为战场
-int main()
-{
-    for(int i=0;i<7;i++) cin>>s[i]; // 用string简单读入
-    for(int i=1;i<=7;i++) for(int j=1;j<=7;j++) fw[1][i][j]=s[i-1][j-1]-'0'; // 朝上
-    for(int i=1;i<=7;i++) for(int j=1;j<=7;j++) fw[2][i][j]=fw[1][8-i][j]; // 朝下
-    for(int i=1;i<=7;i++) for(int j=1;j<=7;j++) fw[3][i][j]=fw[1][j][i]; // 朝左
-    for(int i=1;i<=7;i++) for(int j=1;j<=7;j++) fw[4][i][j]=fw[1][8-j][i]; // 朝右
-    int n;
-    cin>>n;
-    for(int t=0;t<n;t++)
-    {
-        int x,y,f;
-        cin>>x>>y>>f;
-        for(int i=x-3;i<=x+3;i++) // 因为刚才已经旋转好了所以直接涂色即可
-            for(int j=y-3;j<=y+3;j++)
-                if(!(i<1||i>10||j<1||j>10)) // 如果没涂到战场范围之外的话
-                    a[i][j]|=fw[f][i+4-x][j+4-y]; // 就涂色即可（若之前是0我们要把它变成1，若之前是1则还是1，用或即可）
-    }
-    for(int i=1;i<=10;i++)
-    {
-        for(int j=1;j<=10;j++)
-            cout<<a[i][j];
-        cout<<endl;
-    }
-    return 0;
-}
-\end{lstlisting}
+
+\std{A}
 
 \makesolution
 \section*{做法}
+
 \emph{本题改编自[CSP-S2019 江西] 和积和。}
 
 本题有多种解法，这里提供一种效率不高但比较好想的前缀和做法。
@@ -80,7 +52,7 @@ $$S(l,r) = \sum_{i=l}^ra_i \times \sum_{j=l}^rb_j$$
 设数列 $\{a_n\}$ 的前缀和数列为 $\{pre^a_n\}$，数列 $\{b_n\}$ 的前缀和数列为 $\{pre^b_n\}$，有：
 
 \begin{align*}
-    S(l,r) & = \left(pre^a_r - pre^a_{l-1}\right) \times \left(pre^b_r - pre^b_{l-1}\right)      \\
+    S(l,r) & = \left( pre^a_r - pre^a_{l-1} \right) \times \left( pre^b_r - pre^b_{l-1} \right)      \\
            & = pre^a_rpre^b_r - pre^a_rpre^b_{l-1} - pre^a_{l-1}pre^b_r + pre^a_{l-1}pre^b_{l-1}
 \end{align*}
 
@@ -91,324 +63,64 @@ $$S(l,r) = pre^{ab}_r + pre^{ab}_{l-1} - pre^a_rpre^b_{l-1} - pre^a_{l-1}pre^b_r
 把 $\sum_{r=l}^n$ 拆进去，有：
 
 \begin{align*}
-    ans & = \sum_{l=1}^n \left(
-    \sum_{r=l}^n pre^{ab}_r +
-    (n-l+1)pre^{ab}_{l-1} -
-    \sum_{r=l}^n pre^a_rpre^b_{l-1} -
-    \sum_{r=l}^n pre^a_{l-1}pre^b_r\right
-    )                           \\
-        & = \sum_{l=1}^n \left(
-    \sum_{r=l}^n pre^{ab}_r +
-    (n-l+1)pre^{ab}_{l-1} -
-    pre^b_{l-1}\sum_{r=l}^n pre^a_r -
-    pre^a_{l-1}\sum_{r=l}^n pre^b_r\right
-    )
+    ans & = \sum_{l=1}^n \left( \sum_{r=l}^n pre^{ab}_r + (n-l+1)pre^{ab}_{l-1} - \sum_{r=l}^n pre^a_rpre^b_{l-1} - \sum_{r=l}^n pre^a_{l-1}pre^b_r \right) \\
+        & = \sum_{l=1}^n \left( \sum_{r=l}^n pre^{ab}_r + (n-l+1)pre^{ab}_{l-1} - pre^b_{l-1}\sum_{r=l}^n pre^a_r - pre^a_{l-1}\sum_{r=l}^n pre^b_r \right)
 \end{align*}
 
 设数列 $\{pre^a_n\}$ 的前缀和数列为 $\{pre^{pre^a}_n\}$，数列 $\{pre^b_n\}$ 的前缀和数列为 $\{pre^{pre^b}_n\}$，数列 $\{pre^{ab}_n\}$ 的前缀和数列为 $\{pre^{pre^{ab}}_n\}$，上式即化为：
 
-\small
-$$
-    \sum_{l=1}^n \left(
-    \left(pre^{pre^{ab}}_n - pre^{pre^{ab}}_{l-1}\right) +
-    (n-l+1)pre^{ab}_{l-1} -
-    \left(pre^{pre^a}_n - pre^{pre^a}_{l-1}\right)pre^a_r -
-    \left(pre^{pre^b}_n - pre^{pre^b}_{l-1}\right)pre^b_r
-    \right)
-$$
-\normalsize
+{
+    \small
+    $$
+        \sum_{l=1}^n \left(
+        \left(pre^{pre^{ab}}_n - pre^{pre^{ab}}_{l-1}\right) +
+        (n-l+1)pre^{ab}_{l-1} -
+        \left(pre^{pre^a}_n - pre^{pre^a}_{l-1}\right)pre^a_r -
+        \left(pre^{pre^b}_n - pre^{pre^b}_{l-1}\right)pre^b_r
+        \right)
+    $$
+}
 
 数列 $\{a_n\}$ 和数列 $\{b_n\}$是已知的，我们可以 $O(n)$ 预处理出 $\{pre^a_n\}$ 与 $\{pre^b_n\}$，然后我们又可以 $O(n)$ 预处理出 $\{pre^{pre^a}_n\}$、$\{pre^{pre^b}_n\}$、$\{pre^{ab}_n\}$。这样上式后半部分的一大坨就可以 $O(1)$ 得出结果了，总时间复杂度 $O(n)$。
 
 在实现的过程中需要注意本来原式只有加法，无论怎样式子中都不会出现负数。但转化为前缀和后式子中出现了减法，在值取模后相减有可能出现负数，需要把负数转回正数再继续运算。
 
 \section*{标程}
-\begin{lstlisting}
-#include <iostream>
-using namespace std;
-const int MAXN = 5e5+5;
-const int MOD = 1e9+7;
-typedef long long ll;
-ll a[MAXN],b[MAXN];
-ll prea[MAXN],preb[MAXN],preab[MAXN];
-ll preprea[MAXN],prepreb[MAXN],prepreab[MAXN];
-int n;
-inline void calcPre(ll a[], ll pre[])   // 计算a数组的前缀和存于pre数组中
-{
-    for(int i=1;i<=n;i++)
-        pre[i]=(a[i]+pre[i-1]) % MOD;
-}
-ll solve()
-{
-    ll sum = 0;
-    for(int l=1;l<=n;l++)
-    {
-        sum = (sum + prepreab[n]-prepreab[l-1]+MOD) % MOD;  // 第一项
-        sum = (sum + (n-l+1)*preab[l-1]%MOD) % MOD;         // 第二项
-        sum -= (preprea[n]-preprea[l-1])*preb[l-1]%MOD;     // 第三项
-        sum = (sum + MOD) % MOD;    // 有可能出现负数，转为正数
-        sum -= (prepreb[n]-prepreb[l-1])*prea[l-1]%MOD;     // 第四项
-        sum = (sum + MOD) % MOD;    // 有可能出现负数，转为正数
-    }
-    return sum;
-}
-int main()
-{
-    cin>>n;
-    for(int i=1;i<=n;i++) cin>>a[i];
-    for(int i=1;i<=n;i++) cin>>b[i];
-    calcPre(a, prea);
-    calcPre(b, preb);
-    for(int i=1;i<=n;i++) preab[i]=prea[i]*preb[i]%MOD;
-    calcPre(prea, preprea);
-    calcPre(preb, prepreb);
-    calcPre(preab, prepreab);
-    cout<<solve()<<endl;
-    return 0;
-}
-\end{lstlisting}
+
+\std{B}
 
 \makesolution
 \section*{做法}
+
 签到题，按照题目说明中给出的海伦公式进行模拟即可。
 
 \section*{标程}
-\begin{lstlisting}
-#include <cstdio>
-#include <cmath>
-int main()
-{
-    int t;
-    scanf("%d", &t);
-    while(t--)
-    {
-        int a,b,c;
-        scanf("%d%d%d",&a,&b,&c);
-        double p = (a+b+c)/2.0;
-        double s = sqrt(p*(p-a)*(p-b)*(p-c));
-        printf("%.2f\n", s);
-    }
-    return 0;
-}
-\end{lstlisting}
+
+\std{C}
 
 \makesolution
 \section*{做法}
-求各子树大小是树上的经典基操，一遍dfs即可解决。
+
+求各子树大小是树上的经典基操，一遍 dfs 即可解决。
 
 \section*{标程}
-\begin{lstlisting}
-#include <iostream>
-using namespace std;
-const int maxn = 1e4+5;
-struct E { int to,next; } Edge[maxn<<1];    // 链式前向星，因为是树所以开2倍maxn大小即可
-int tot,Head[maxn];
-inline void AddEdge(int u,int v) { Edge[tot]={v,Head[u]}; Head[u]=tot++; }
-int siz[maxn];
-void dfs(int u,int f)
-{
-    siz[u]=1;   // 每个结点的大小等于自己的所有子树的大小之和加1（因为还包括结点自己）
-    for(int i=Head[u];~i;i=Edge[i].next)
-    {
-        int v = Edge[i].to;
-        if(v==f) continue;  // 防止走回父亲
-        dfs(v,u);   // 计算v子树大小
-        siz[u]+=siz[v];     // 在u子树大小中加上v子树大小
-    }
-}
-#include <cstring>
-int main()
-{
-    memset(Head,-1,sizeof(Head));   // 链式前向星-1写法，将Head数组初始化为-1
-    int n; cin>>n;
-    for(int i=1,u,v;i<n;i++)        // 读入数据，注意正反加两条边
-        cin>>u>>v, AddEdge(u,v), AddEdge(v,u);
-    for(int rt=1;rt<=n;rt++)
-    {
-        dfs(rt, 0);
-        for(int i=1;i<=n;i++)
-            cout<<siz[i]<<' ';
-        cout<<endl;
-    }
-    return 0;
-}
-\end{lstlisting}
+
+\std{D}
 
 \makesolution
 \section*{做法}
+
 很容易能看出来本题是对数组 $a_1,a_2,\cdots,a_n$ 维护单点修改和区间查最大值（带单点修改的 RMQ 问题）。
 
 做法有很多，此处给出线段树做法。
 
-\section*{标程(By Tifa)}
-\begin{lstlisting}
-    #include <bits/stdc++.h>
-    using namespace std;
-    const int N = 2e5 + 5;
-    // 线段树
-    namespace Segtree {
-    constexpr inline int lch(const int now) { return now << 1; }
-    constexpr inline int rch(const int now) { return now << 1 | 1; }
-    int n, p;
-    struct Node {
-        int val, idx;
-        bool operator<(const Node & rhs) const { return val == rhs.val ? idx > rhs.idx : val < rhs.val; }
-    } sgt[N * 4];
-    int a[N];
-    
-    void pushup(const int now) { sgt[now] = max(sgt[lch(now)], sgt[rch(now)]); }
+\section*{标程}
 
-    void _init(const int now, const int l, const int r) {
-        if (l == r) {
-            sgt[now] = {a[l], l};
-            return;
-        }
-        int mid = (l + r) / 2;
-        _init(lch(now), l, mid);
-        _init(rch(now), mid + 1, r);
-        pushup(now);
-    }
-    void _modify(const int pos, const int k, const int now, const int l, const int r) {
-        if (l == r) {
-            if ((sgt[now].val += k) >= p) sgt[now].val -= p;
-            return;
-        }
-\end{lstlisting}
-\newpage
-\begin{lstlisting}
-        int mid = (l + r) / 2;
-        if (pos <= mid) _modify(pos, k, lch(now), l, mid);
-        else _modify(pos, k, rch(now), mid + 1, r);
-        pushup(now);
-    }
-    auto _query(const int ql, const int qr, const int now, const int l, const int r) {
-        if (ql <= l && r <= qr) return sgt[now];
-        int mid = (l + r) / 2;
-        Node _1 = {-1, 0}, _2 = {-1, 0};
-        if (ql <= mid) _1 = _query(ql, qr, lch(now), l, mid);
-        if (qr > mid) _2 = _query(ql, qr, rch(now), mid + 1, r);
-        return max(_1, _2);
-    }
-    
-    void init() {
-        cin >> n >> p; ++p;
-        for (int i = 1; i <= n; ++i) cin >> a[i];
-        _init(1, 1, n);
-    }
-    void modify(int x, int y) {
-        if (!(1 <= x && x <= n)) { cout << "invalid\n"; return; }
-        _modify(x, y % p, 1, 1, n);
-        cout << '\n';
-    }
-    void query(int x, int y) {
-        if (!(1 <= x && x <= y && y <= n)) { cout << "invalid\n"; return; }
-        auto _ = _query(x, y, 1, 1, n);
-        cout << _.val << ' ' << _.idx << '\n';
-    }
-    }   // namespace Segtree
-
-    int main() {
-        ios::sync_with_stdio(false);
-        Segtree::init();
-        int m; cin >> m;
-        for (int i = 1, op, x, y; i <= m; ++i) {
-            cin >> op >> x >> y;
-            if (op == 1) Segtree::modify(x, y);
-            else Segtree::query(x, y);
-        }
-        return 0;
-    }
-\end{lstlisting}
-
-\section*{标程(By AgOH)}
-\begin{lstlisting}
-#include <iostream>
-using namespace std;
-const int maxn = 2e5+5;
-int a[maxn], mod;
-typedef pair<int,int> pii;
-struct Node { int l,r; pii val; }sgt[maxn<<2];
-inline int ls(int k) { return k<<1; }
-inline int rs(int k) { return k<<1|1; }
-inline pii max(pii x, pii y)
-{
-    if(x.first<y.first) return y;
-    else if(x.first>y.first) return x;
-    else if(x.second<y.second) return x;    // 值相等时返回下标比较小的
-    else return y;
-}
-inline void pushup(int k) { sgt[k].val=max(sgt[ls(k)].val, sgt[rs(k)].val); }
-void build(int l,int r,int k=1)
-{
-    sgt[k].l=l, sgt[k].r=r;
-    if(l==r) sgt[k].val={a[l],l};
-    else 
-    {
-        int m = (l+r)>>1;
-        build(l,m,ls(k));
-        build(m+1,r,rs(k));
-        pushup(k);
-    }
-}
-void modify(int p,int z,int k=1)
-{
-    int l=sgt[k].l, r=sgt[k].r;
-    if(l==r) sgt[k].val.first=(sgt[k].val.first+z)%mod; // 使用取模来简单处理全部被点亮后再次受到攻击的情况
-    else 
-    {
-        int m = (l+r)>>1;
-        if(p<=m) modify(p,z,ls(k));
-        else modify(p,z,rs(k));
-        pushup(k);
-    }
-}
-\end{lstlisting}
-\clearpage
-\begin{lstlisting}
-auto query(int x,int y,int k=1)
-{
-    int l=sgt[k].l, r=sgt[k].r;
-    if(x<=l&&y>=r) return sgt[k].val;
-    int m = (l+r)>>1;
-    pii ret = {-1,0};
-    if(x<=m) ret=query(x,y,ls(k));
-    if(y>m) ret=max(ret, query(x,y,rs(k)));
-    return ret;
-}
-int main()
-{
-    ios::sync_with_stdio(false);
-    int n, m;
-    cin>>n>>mod;
-    ++mod;  //! 注意
-    for(int i=1;i<=n;i++) cin>>a[i];
-    build(1,n);
-    cin>>m;
-    while(m--)
-    {
-        int opt,x,y;
-        cin>>opt>>x>>y;
-        if(opt==1)
-        {
-            if(!(1<=x&&x<=n)) cout<<"invalid"<<endl;
-            else modify(x,y), cout<<endl;
-        }
-        else 
-        {
-            if(!(1<=x&&x<=y&&y<=n)) cout<<"invalid"<<endl;
-            else
-            {
-                auto tmp = query(x,y);
-                cout<<tmp.first<<' '<<tmp.second<<endl;
-            }
-        }
-    }
-    return 0;
-}
-\end{lstlisting}
+\std{E}
 
 \makesolution
 \section*{做法}
+
 首先，若落下的这着棋其周围没有己方棋子，那么它能产生的影响只有使得己方棋块数量增加了 $1$。
 
 否则，我们就需要判断这着棋是不是一着“粘”，若这着棋是“粘”，它“粘”住了几块棋（也就是这着棋使得棋块的数量减少了多少）。
@@ -418,38 +130,7 @@ int main()
 每着棋的信息是由横纵坐标 $x,y$ 两个信息决定的，我们可以将其转化为 $(x-1)*n + y$ 来轻松搞定并查集的实现。
 
 \section*{标程}
-\small
-\begin{lstlisting}
-#include <iostream>
-using namespace std;
-const int maxn = 505;
-int fa[maxn*maxn], n, m, zhan[3], kuai[3], board[maxn][maxn];
-int find(int x) { return x==fa[x]?x:x=find(fa[x]); }
-inline void merge(int x,int y) { fa[find(x)]=find(y); }
-inline int hs(int x,int y) { return (x-1)*n+y; }
-int main()
-{
-    cin>>n>>m;
-    for(int i=1;i<=n*n;i++) fa[i]=i;    // 初始化并查集
-    int mv[4][2]={{-1,0}, {1,0}, {0,-1}, {0,1}};
-    for(int i=1;i<=m;i++) {
-        int x,y,k,cnt=0;    // 每与周围同色棋子合并一下cnt就+1，当cnt为2时代表这一着棋是粘
-        cin>>x>>y;
-        board[x][y]=k=(i%2+1);    // 存下当前位置棋子黑白，黑为2白为1
-        ++kuai[k];              // 如果是孤立棋子的话块数就会+1
-        for(int j=0;j<4;j++) {  // 利用mv数组遍历上下左右四个方向的格子
-            int p=x+mv[j][0], q=y+mv[j][1];
-            if(board[x][y]==board[p][q]&&find(hs(x,y))!=find(hs(p,q))) { // 如果是同色不同块
-                merge(hs(x,y), hs(p,q));
-                --kuai[k];  // 每合并一次，块数就会减一
-                if(++cnt==2) ++zhan[k];
-            }
-        }
-    }
-    cout<<zhan[2]<<' '<<zhan[1]<<endl<<kuai[2]<<' '<<kuai[1]<<endl;
-    return 0;
-}
-\end{lstlisting}
-\normalsize
+
+\std{F}
 
 \end{document}
